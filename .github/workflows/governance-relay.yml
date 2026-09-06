@@ -1,6 +1,10 @@
 name: Governance Relay
 
 on:
+  issues:
+    types:
+      - opened
+
   issue_comment:
     types:
       - created
@@ -10,6 +14,41 @@ permissions:
   issues: write
 
 jobs:
+  relay-publish:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: relay-${{ github.repository }}-publish-${{ github.event.issue.number }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Dispatch publish event to private governance
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GOVERNANCE_DISPATCH_TOKEN }}
+          SOURCE_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          curl --fail-with-body \
+            --request POST \
+            --url "https://api.github.com/repos/softbreak/northstarops-private/dispatches" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --data @- <<EOF
+          {
+            "event_type": "northstarops-publish-event",
+            "client_payload": {
+              "source_repo": "${SOURCE_REPO}",
+              "source_event": "issues",
+              "issue_number": "${ISSUE_NUMBER}",
+              "actor": "${ACTOR}"
+            }
+          }
+          EOF
+
   relay-claim:
     if: >-
       github.event.issue.pull_request == null &&
