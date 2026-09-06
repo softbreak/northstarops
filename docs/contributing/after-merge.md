@@ -2,12 +2,12 @@
 
 Pull Request Squash merge ile `main` branch'e alındığında katkı tamamlanır.
 
-## Sistem tarafında beklenen durum
+## Public Issue üzerinde göreceğin durum
 
 - İlgili Issue kapanır.
 - `status: in-review` kaldırılır.
 - `status: done` eklenir.
-- Private proje kaydı `Done` durumuna geçer.
+- Issue altında katkının tamamlandığını belirten bir mesaj gösterilir.
 
 ## Contributor olarak yapman gereken
 
@@ -19,4 +19,4 @@ Bir sonraki katkı için yalnızca `status: available` olan Issue'lar arasından
 
 ## Teşekkürler
 
-Katkın NorthStarOps'un public GitHub geçmişinin bir parçası oldu. Review ve governance zincirini tamamladığın için teşekkürler.
+Katkın NorthStarOps'un public GitHub geçmişinin bir parçası oldu. Katkı sürecini tamamladığın için teşekkürler.
