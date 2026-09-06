@@ -1,0 +1,86 @@
+name: Governance Relay
+
+on:
+  issue_comment:
+    types:
+      - created
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  relay-claim:
+    if: >-
+      github.event.issue.pull_request == null &&
+      github.event.comment.body == '/claim'
+
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: relay-${{ github.repository }}-claim-${{ github.actor }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Reply when contributor already claimed this Issue
+        if: >-
+          github.event.issue.assignee != null &&
+          github.event.issue.assignee.login == github.actor
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          MESSAGE="ℹ️ @${ACTOR} bu Issue'yu zaten claim yaptın."
+          jq -n --arg body "${MESSAGE}" '{body: $body}' \
+            | gh api --method POST "repos/${SOURCE_REPO}/issues/${ISSUE_NUMBER}/comments" --input -
+
+      - name: Reply when Issue is claimed by another contributor
+        if: >-
+          github.event.issue.assignee != null &&
+          github.event.issue.assignee.login != github.actor
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ACTOR: ${{ github.actor }}
+          ASSIGNEE: ${{ github.event.issue.assignee.login }}
+        run: |
+          MESSAGE="⚠️ @${ACTOR} bu Issue üzerinde @${ASSIGNEE} tarafından claim yapılmış."
+          jq -n --arg body "${MESSAGE}" '{body: $body}' \
+            | gh api --method POST "repos/${SOURCE_REPO}/issues/${ISSUE_NUMBER}/comments" --input -
+
+      - name: Dispatch claim event to private governance
+        if: >-
+          github.event.issue.state == 'open' &&
+          github.event.issue.assignee == null &&
+          contains(github.event.issue.labels.*.name, 'status: available')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GOVERNANCE_DISPATCH_TOKEN }}
+          SOURCE_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          curl --fail-with-body \
+            --request POST \
+            --url "https://api.github.com/repos/softbreak/northstarops-private/dispatches" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --data @- <<EOF
+          {
+            "event_type": "northstarops-governance-event",
+            "client_payload": {
+              "source_repo": "${SOURCE_REPO}",
+              "source_event": "issue_comment",
+              "issue_number": "${ISSUE_NUMBER}",
+              "comment_id": "${COMMENT_ID}",
+              "actor": "${ACTOR}"
+            }
+          }
+          EOF
