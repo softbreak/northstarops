@@ -27,4 +27,4 @@ Claim kabul edildiğinde:
 
 ## Sonraki adım
 
-Claim kabul edildiyse [Draft Pull Request açma rehberine](open-draft-pr.md) geç.
+Claim kabul edildiyse [çalışma ortamını hazırlama rehberine](prepare-workspace.md) geç.
