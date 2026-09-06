@@ -19,6 +19,11 @@ try {
         throw "dotnet tool restore failed."
     }
 
+    dotnet restore
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet restore failed."
+    }
+
     dotnet ef dbcontext scaffold `
         $ConnectionString `
         Microsoft.EntityFrameworkCore.SqlServer `
