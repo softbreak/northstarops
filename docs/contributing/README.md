@@ -8,7 +8,7 @@ Bu klasör, NorthStarOps'a katkı verirken izleyeceğin akışı kısa ve uygula
 2. [Issue nasıl okunur?](issue-guide.md)
 3. [`/claim` ile Issue alma](claim-an-issue.md)
 4. [Çalışma ortamını hazırlama](prepare-workspace.md)
-5. Issue kapsamındaki değişikliği yapma ve [commit/push](commit-and-push.md)
+5. [Issue kapsamındaki değişikliği yapma ve commit/push](commit-and-push.md)
 6. [Draft Pull Request açma ve Ready for review](open-draft-pr.md)
 7. [Changes requested sonrası düzeltme yapma](respond-to-changes-requested.md)
 8. [PR onaylandıktan sonra ne olur?](after-approval.md)
