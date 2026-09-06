@@ -1,8 +1,8 @@
-# NorthStarOps Katkı Yaşam Döngüsü Rehberleri
+# NorthStarOps Katkı Rehberleri
 
-Bu klasör, NorthStarOps katkı sürecinde karşılaşacağın her ana adım için kısa ve uygulanabilir rehberler içerir.
+Bu klasör, NorthStarOps'a katkı verirken karşılaşacağın ana adımları kısa ve uygulanabilir şekilde anlatır.
 
-## Akış
+## Katkı akışı
 
 1. [`/claim` ile Issue alma](claim-an-issue.md)
 2. [Claim süresi dolarsa ne olur?](claim-timeout.md)
@@ -11,17 +11,17 @@ Bu klasör, NorthStarOps katkı sürecinde karşılaşacağın her ana adım iç
 5. [PR onaylandıktan sonra ne olur?](after-approval.md)
 6. [Merge sonrası süreç](after-merge.md)
 
+## Issue durumları
+
+Katılımcı olarak public Issue üzerinde şu durumları görürsün:
+
+- `status: available` — claim edilebilir iş
+- `status: claimed` — bir katılımcı tarafından alınmış iş
+- `status: in-review` — Pull Request review sürecinde
+- `status: done` — katkı tamamlanmış
+
 ## Temel kural
 
-Her Issue tek bir katkı akışı üzerinden ilerler:
+Bir Issue üzerinde çalışmaya başlamadan önce mutlaka `/claim` kullan.
 
-`Available → Claimed → In review → Done`
-
-Public Issue label karşılıkları:
-
-- `status: available`
-- `status: claimed`
-- `status: in-review`
-- `status: done`
-
-Bir Issue üzerinde çalışmaya başlamadan önce mutlaka `/claim` kullan. Claim kabul edilmeden Pull Request açma.
+Claim kabul edilmeden o Issue için çalışma başlatma veya Pull Request açma. Claim kabul edildikten sonra ilgili Issue altında sana sonraki adımı anlatan bir mesaj gösterilir.
