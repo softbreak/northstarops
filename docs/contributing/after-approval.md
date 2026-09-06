@@ -8,8 +8,7 @@ Pull Request reviewer tarafından onaylandığında contributor tarafındaki ana
 - Gereksiz ek commit gönderme.
 - Review tamamlandıysa mevcut PR'ı olduğu gibi bırak.
 - Merge işlemini reviewer/maintainer gerçekleştirir.
-
-NorthStarOps `main` branch koruması nedeniyle merge işlemi PR üzerinden ve yalnızca izin verilen merge yöntemiyle yapılır.
+- Issue altında PR'ın onaylandığını açıklayan bir bilgilendirme mesajı gösterilir.
 
 ## Merge yöntemi
 
@@ -17,6 +16,6 @@ NorthStarOps katkıları **Squash merge** ile birleştirilir. Böylece katkını
 
 ## Approval merge anlamına gelmez
 
-Approval, PR'ın review açısından kabul edildiğini gösterir. Lifecycle ancak merge tamamlandığında `Done` durumuna geçer.
+Approval, PR'ın review açısından kabul edildiğini gösterir. Katkı ancak merge tamamlandığında tamamlanmış sayılır.
 
 Merge sonrasında [merge sonrası rehberine](after-merge.md) geçebilirsin.

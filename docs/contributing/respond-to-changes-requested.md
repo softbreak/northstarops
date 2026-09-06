@@ -16,11 +16,11 @@ GitHub mevcut Pull Request'i otomatik olarak günceller.
 
 **Aynı Issue → aynı branch → aynı Pull Request.**
 
-Yeni PR açmak lifecycle bağlantısını bozar ve kabul edilmeyebilir.
+Yeni PR açmak katkı akışını bozar ve kabul edilmeyebilir.
 
 ## Review thread'leri
 
-Reviewer'ın açtığı konuşmaları yalnızca gerçekten çözüldükten sonra resolve et. `main` branch ruleset'i çözülmemiş review conversation'ları varken merge'e izin vermez.
+Reviewer'ın açtığı konuşmaları yalnızca gerçekten çözüldükten sonra resolve et. Çözülmemiş review konuşmaları varken PR merge edilemez.
 
 ## Sonraki adım
 

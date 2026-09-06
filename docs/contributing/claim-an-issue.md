@@ -10,13 +10,13 @@ Bir Issue üzerinde çalışmaya başlamadan önce Issue'nun `status: available`
 /claim
 ```
 
-Komut kabul edilirse:
+Claim kabul edildiğinde:
 
 - Issue sana assign edilir.
 - `status: available` kaldırılır.
 - `status: claimed` eklenir.
-- Private proje kaydı `Claimed` durumuna geçer.
 - 24 saatlik Draft PR süren başlar.
+- Issue altında sana sonraki adımı anlatan bir bilgilendirme mesajı gönderilir.
 
 ## Önemli kurallar
 
