@@ -15,6 +15,10 @@ on:
       - reopened
       - edited
 
+  pull_request_review:
+    types:
+      - submitted
+
 permissions:
   contents: read
   issues: read
@@ -139,3 +143,57 @@ jobs:
             }
           }
           EOF
+
+  capture-review:
+    if: >-
+      github.event_name == 'pull_request_review' &&
+      github.event.pull_request.head.repo.full_name != github.repository
+
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: review-capture-${{ github.repository }}-${{ github.event.review.id }}
+      queue: max
+
+    steps:
+      - name: Capture review event without secrets
+        shell: bash
+        env:
+          SOURCE_REPO: ${{ github.repository }}
+          SOURCE_EVENT: ${{ github.event_name }}
+          SOURCE_ACTION: ${{ github.event.action }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEW_ID: ${{ github.event.review.id }}
+          ACTOR: ${{ github.actor }}
+          SOURCE_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          if [ "${SOURCE_EVENT}" != "pull_request_review" ] || [ "${SOURCE_ACTION}" != "submitted" ]; then
+            echo "FAIL_CLOSED: unexpected review capture event"
+            exit 1
+          fi
+
+          if ! [[ "${PR_NUMBER}" =~ ^[1-9][0-9]*$ ]] || ! [[ "${REVIEW_ID}" =~ ^[1-9][0-9]*$ ]] || ! [[ "${SOURCE_RUN_ID}" =~ ^[1-9][0-9]*$ ]] || [ -z "${ACTOR}" ]; then
+            echo "FAIL_CLOSED: malformed review capture payload"
+            exit 1
+          fi
+
+          jq -n \
+            --arg source_repo "${SOURCE_REPO}" \
+            --arg source_event "${SOURCE_EVENT}" \
+            --arg source_action "${SOURCE_ACTION}" \
+            --arg pr_number "${PR_NUMBER}" \
+            --arg review_id "${REVIEW_ID}" \
+            --arg actor "${ACTOR}" \
+            --arg source_run_id "${SOURCE_RUN_ID}" \
+            '{source_repo:$source_repo,source_event:$source_event,source_action:$source_action,pr_number:$pr_number,review_id:$review_id,actor:$actor,source_run_id:$source_run_id}' \
+            > review-payload.json
+
+      - name: Upload review relay payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-review-payload
+          path: review-payload.json
+          if-no-files-found: error
+          retention-days: 1
