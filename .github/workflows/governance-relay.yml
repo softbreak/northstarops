@@ -14,6 +14,8 @@ on:
       - opened
       - reopened
       - edited
+      - ready_for_review
+      - synchronize
       - closed
 
   pull_request_review:
