@@ -1,15 +1,16 @@
+using NorthStarOps.Api;
+using NorthStarOps.Application;
+using NorthStarOps.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("NorthStarOps");
-
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    throw new InvalidOperationException(
-        "NorthStarOps veritabanı bağlantı bilgisi tanımlı değil. " +
-        "ConnectionStrings:NorthStarOps değerini User Secrets veya uygun bir configuration provider üzerinden tanımlayın.");
-}
+builder.Services
+    .AddApplication()
+    .AddPersistence(builder.Configuration);
 
 var app = builder.Build();
+
+app.MapApplicationEndpoints();
 
 app.MapGet("/", () => Results.Ok(new
 {
